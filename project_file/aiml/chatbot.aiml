@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<aiml version="1.0">
+
+   <!-- Define patterns for asking about father -->
+   <category>
+      <pattern>WHO IS THE FATHER OF *</pattern>
+      <template>
+         <think>
+            <!-- Extract the name from the user input -->
+            <set name="person"><star/></set>
+         </think>
+         <!-- Query Prolog knowledge base for the father -->
+         <python>
+            import pytholog as pl
+            kb = pl.KnowledgeBase("Family")
+            kb.from_file("family.pl")
+            query = "father(X, '" + <get name="person"/> + "')"
+            result = kb.query(pl.Expr(query))
+            if result and result[0]['X']:
+                father = result[0]['X']
+                father = ' '.join(father.split('_'))
+                print("The father of <get name='person'/> is " + father + ".")
+                <set name="answer">The father of <get name="person"/> is <get name="father"/>.</set>
+            else:
+                print("Sorry, I don't know who the father of <get name='person'/> is.")
+                <set name="answer">Sorry, I don't know who the father of <get name="person"/> is.</set>
+         </python>
+         <get name="answer"/>
+      </template>
+   </category>
+
+   <!-- Define patterns for asking about mother, brother, sister, etc. -->
+   <!-- Repeat the above process for other relations -->
+
+</aiml>
